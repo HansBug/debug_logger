@@ -1,4 +1,5 @@
 /.idea
 /out
 /META-INF
+/src/META-INF
 debug_logger.iml
