@@ -144,9 +144,10 @@ public abstract class DebugHelper {
     }
     
     /**
+     * 根据String[] args配置DebugHelper设置
      *
-     * @param args
-     * @throws DebugHelperException
+     * @param args 系统传入的命令行参数
+     * @throws DebugHelperException DebugHelper异常类
      */
     public static void setSettingsFromArguments(String[] args) throws DebugHelperException {
         Arguments arguments = new Arguments();
