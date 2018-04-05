@@ -170,6 +170,17 @@ public abstract class DebugHelper {
     }
     
     /**
+     * 正则表达式是否不匹配
+     *
+     * @param regex 正则表达式字符串（null则一定匹配）
+     * @param str   待匹配字符串
+     * @return 是否不匹配
+     */
+    private static boolean regexMismatch(String regex, String str) {
+        return (regex != null) && (!Pattern.matches(regex, str));
+    }
+    
+    /**
      * 判断栈信息是否合法
      *
      * @param trace 栈信息
@@ -179,10 +190,10 @@ public abstract class DebugHelper {
         try {
             Class cls = Class.forName(trace.getClassName());
             String package_name = (cls.getPackage() != null) ? cls.getPackage().getName() : "";
-            boolean package_name_mismatch = ((package_name_regex != null) && (!Pattern.matches(package_name_regex, package_name)));
-            boolean file_name_mismatch = ((file_name_regex != null) && (!Pattern.matches(file_name_regex, trace.getFileName())));
-            boolean class_name_mismatch = ((class_name_regex != null) && (!Pattern.matches(class_name_regex, cls.getSimpleName())));
-            boolean method_name_mismatch = ((method_name_regex != null) && (!Pattern.matches(method_name_regex, trace.getMethodName())));
+            boolean package_name_mismatch = regexMismatch(package_name_regex, package_name);
+            boolean file_name_mismatch = regexMismatch(file_name_regex, trace.getFileName());
+            boolean class_name_mismatch = regexMismatch(class_name_regex, cls.getSimpleName());
+            boolean method_name_mismatch = regexMismatch(method_name_regex, trace.getMethodName());
             return !(package_name_mismatch || file_name_mismatch || class_name_mismatch || method_name_mismatch);
         } catch (ClassNotFoundException e) {
             return false;
