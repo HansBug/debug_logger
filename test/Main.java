@@ -4,18 +4,22 @@ import com.hansbug.arguments.exceptions.InvalidArgumentInfo;
 import com.hansbug.debug.DebugHelper;
 import com.hansbug.debug.exceptions.DebugHelperException;
 import test_package_A.TestClassA;
+import test_package_B.TestThread;
 
 import java.util.Map;
 
 abstract class Main {
     public static void main(String[] args) {
         try {
-//            testArguments(args);
-            testDebugHelper(args);
+            DebugHelper.setSettingsFromArguments(args);
+//            testDebugHelper(args);
+            testThread(args);
         } catch (Exception e) {
-            System.out.println(String.format("[%s] %s", e.getClass().getName(), e.getMessage()));
+            StackTraceElement trace = e.getStackTrace()[1];
+            System.out.println(String.format("[%s : %s] [%s] %s", trace.getFileName(), trace.getLineNumber(), e.getClass().getName(), e.getMessage()));
             System.exit(1);
         }
+        
     }
     
     /**
@@ -33,15 +37,27 @@ abstract class Main {
         }
     }
     
-    private static void testDebugHelper(String[] args) throws ArgumentsException, DebugHelperException {
-        DebugHelper.setSettingsFromArguments(args);
-        
+    private static void testDebugHelper(String[] args) {
+//        DebugHelper.setSettingsFromArguments(args);
         DebugHelper.debugPrintln(1, "ksdhjf");
-    
+        
         TestClassA t1 = new TestClassA();
         System.out.println(t1.toString());
         
         TestClassA t2 = new TestClassA(2, 7);
         System.out.println(t2.toString());
+    }
+    
+    private static void testThread(String[] args) throws InterruptedException {
+        TestThread tt1 = new TestThread("thread_1", 15, 503);
+        TestThread tt2 = new TestThread("thread_2", 6, 397);
+        tt1.start();
+        tt2.start();
+        tt2.join();
+        tt1.wait();
+//        Thread.sleep(3000);
+//        tt1.notify();
+        
+//        System.exit(1);
     }
 }
