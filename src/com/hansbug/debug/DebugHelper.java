@@ -6,6 +6,7 @@ import com.hansbug.debug.exceptions.DebugHelperException;
 import com.hansbug.debug.exceptions.InvalidDebugLevel;
 import com.hansbug.arguments.exceptions.InvalidArgumentInfo;
 import com.hansbug.arguments.Arguments;
+import com.hansbug.log.LogHelper;
 import com.hansbug.models.HashDefaultMap;
 
 import java.util.regex.Pattern;
@@ -24,10 +25,8 @@ public abstract class DebugHelper {
     /**
      * value constants
      */
-    private static final int DEFAULT_DEBUG_LEVEL = 0;
-    private static final int MIN_DEBUG_LEVEL = 0;
+    private static final int MIN_DEBUG_LEVEL = 1;
     private static final int MAX_DEBUG_LEVEL = 5;
-    private static final int NO_DEBUG_LEVEL = 0;
     
     /**
      * argument constants
@@ -39,16 +38,28 @@ public abstract class DebugHelper {
     private static final String ARG_FULL_DEBUG_FILE_NAME = "debug_file_name";
     private static final String ARG_FULL_DEBUG_CLASS_NAME = "debug_class_name";
     private static final String ARG_FULL_DEBUG_METHOD_NAME = "debug_method_name";
+    private static final String DEBUG_LOG_FILE = "debug.log";
     
     /**
      * helper value
      */
-    private static int debug_level = DEFAULT_DEBUG_LEVEL;
+    private static boolean enable_debug = false;
+    private static int debug_level = MIN_DEBUG_LEVEL;
     private static boolean range_include_children = false;
     private static String package_name_regex = null;
     private static String file_name_regex = null;
     private static String class_name_regex = null;
     private static String method_name_regex = null;
+    private static LogHelper log_helper = new LogHelper(DEBUG_LOG_FILE);
+    
+    /**
+     * 设置是否启用debug
+     *
+     * @param enable_debug 启用debug
+     */
+    private static void setEnableDebug(boolean enable_debug) {
+        DebugHelper.enable_debug = enable_debug;
+    }
     
     /**
      * 设置debug level
@@ -119,7 +130,7 @@ public abstract class DebugHelper {
      * @throws InvalidArgumentInfo 非法命令行异常
      */
     private static Arguments setArguments(Arguments arguments) throws InvalidArgumentInfo {
-        arguments.addArgs(ARG_SHORT_DEBUG, ARG_FULL_DEBUG, true, String.valueOf(DEFAULT_DEBUG_LEVEL));
+        arguments.addArgs(ARG_SHORT_DEBUG, ARG_FULL_DEBUG, true);
         arguments.addArgs(null, ARG_FULL_DEBUG_INCLUDE_CHILDREN, false);
         arguments.addArgs(null, ARG_FULL_DEBUG_PACKAGE_NAME, true);
         arguments.addArgs(null, ARG_FULL_DEBUG_FILE_NAME, true);
@@ -135,12 +146,32 @@ public abstract class DebugHelper {
      * @throws InvalidDebugLevel DebugLevel非法
      */
     private static void setSettingsFromArguments(HashDefaultMap<String, String> arguments) throws InvalidDebugLevel {
-        DebugHelper.setDebugLevel(Integer.valueOf(arguments.get(ARG_FULL_DEBUG)));
-        DebugHelper.setRangeIncludeChildren(arguments.containsKey(ARG_FULL_DEBUG_INCLUDE_CHILDREN));
-        DebugHelper.setPackageNameRegex(arguments.get(ARG_FULL_DEBUG_PACKAGE_NAME));
-        DebugHelper.setFileNameRegex(arguments.get(ARG_FULL_DEBUG_FILE_NAME));
-        DebugHelper.setClassNameRegex(arguments.get(ARG_FULL_DEBUG_CLASS_NAME));
-        DebugHelper.setMethodNameRegex(arguments.get(ARG_FULL_DEBUG_METHOD_NAME));
+        DebugHelper.setEnableDebug(arguments.containsKey(ARG_FULL_DEBUG));
+        if (enable_debug) {
+            DebugHelper.setDebugLevel(Integer.valueOf(arguments.get(ARG_FULL_DEBUG)));
+            DebugHelper.setRangeIncludeChildren(arguments.containsKey(ARG_FULL_DEBUG_INCLUDE_CHILDREN));
+            DebugHelper.setPackageNameRegex(arguments.get(ARG_FULL_DEBUG_PACKAGE_NAME));
+            DebugHelper.setFileNameRegex(arguments.get(ARG_FULL_DEBUG_FILE_NAME));
+            DebugHelper.setClassNameRegex(arguments.get(ARG_FULL_DEBUG_CLASS_NAME));
+            DebugHelper.setMethodNameRegex(arguments.get(ARG_FULL_DEBUG_METHOD_NAME));
+            
+            logger("=====================================DebugHelper initialized!=====================================");
+            String settings = String.format("[Configuration]debug_level: %s, include_chilren: %s", debug_level, range_include_children);
+            if (package_name_regex != null) settings += String.format(", package_name: %s", package_name_regex);
+            if (file_name_regex != null) settings += String.format(", file_name: %s", file_name_regex);
+            if (class_name_regex != null) settings += String.format(", class_name: %s", class_name_regex);
+            if (method_name_regex != null) settings += String.format(", method_name: %s", method_name_regex);
+            logger(settings);
+        }
+    }
+    
+    /**
+     * 打印文件日志
+     *
+     * @param log 日志行
+     */
+    private static void logger(String log) {
+        if (enable_debug) log_helper.logger(log);
     }
     
     /**
@@ -166,7 +197,7 @@ public abstract class DebugHelper {
      * @return 是否需要打印
      */
     private static boolean isLevelValid(int debug_level) {
-        return ((debug_level <= DebugHelper.debug_level) && (debug_level != NO_DEBUG_LEVEL));
+        return enable_debug && (debug_level <= DebugHelper.debug_level);
     }
     
     /**
@@ -233,13 +264,15 @@ public abstract class DebugHelper {
      * @param debug_info  debug信息
      */
     public static void debugPrintln(int debug_level, String debug_info) {
-        if (isLevelValid(debug_level)) {
-            StackTraceElement[] trace_list = new Throwable().getStackTrace();
-            StackTraceElement trace = trace_list[1];
-            if (isRangeValid(trace_list, trace)) {
-                String debug_location = String.format("[%s : %s]", trace.getFileName(), trace.getLineNumber());
-                System.out.println(String.format("[DEBUG - %s] %s %s", debug_level, debug_location, debug_info));
-            }
+        StackTraceElement[] trace_list = new Throwable().getStackTrace();
+        StackTraceElement trace = trace_list[1];
+        String debug_location = String.format("[%s:%s]", trace.getFileName(), trace.getLineNumber());
+        if (isLevelValid(debug_level) && isRangeValid(trace_list, trace)) {
+            String output = String.format("[DEBUG-%s] %s %s", debug_level, debug_location, debug_info);
+            System.out.println(output);
+            logger(String.format("[DEBUG OUTPUT] %s", output));
+        } else {
+            logger(String.format("[DEBUG HIDDEN] Location : %s", debug_location));
         }
     }
 }

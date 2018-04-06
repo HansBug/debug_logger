@@ -6,13 +6,34 @@ import com.hansbug.debug.exceptions.DebugHelperException;
 import test_package_A.TestClassA;
 import test_package_B.TestThread;
 
+import java.io.File;
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 abstract class Main {
     public static void main(String[] args) {
+//        System.out.println(args[0]);
+//        for (int i = 0; i < 100; i++) {
+//            Date d = new Date(System.currentTimeMillis());
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+//            System.out.println(sdf.format(d));
+//            try {
+//                Thread.sleep(100);
+//            }catch (Exception e) {
+//
+//            }
+//        }
+//        System.exit(1);
         try {
+            System.out.println(System.getProperty("user.dir"));
+            
             DebugHelper.setSettingsFromArguments(args);
-//            testDebugHelper(args);
+            testDebugHelper(args);
+            
             testThread(args);
         } catch (Exception e) {
             StackTraceElement trace = e.getStackTrace()[1];
@@ -57,7 +78,7 @@ abstract class Main {
         tt1.wait();
 //        Thread.sleep(3000);
 //        tt1.notify();
-        
+
 //        System.exit(1);
     }
 }
