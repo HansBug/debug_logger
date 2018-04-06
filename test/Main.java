@@ -7,6 +7,7 @@ import test_package_A.TestClassA;
 import test_package_B.TestThread;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.ParsePosition;

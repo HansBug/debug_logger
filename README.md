@@ -30,6 +30,24 @@ When you use the `--debug 1`, there will be nothing output because we the **debu
  
 ## Command line configuration
 
+* **-D \<level\>, --debug \<level\>** define the debug level. The maximum of the debug level is `5` and the minimum is `1`.
+* **--debug_package_name \<package_name\>** define the limit of the package name(full name, just like `com.hansbug.debug`)
+* **--debug_file_name \<file_name\>** define the limit of the file name(short file name, just like `Main.java`, `DebugHelper.java`)
+* **--debug_class_name \<class_name\>** define the limit of the class name(short class name, **including inner classes**, like `TestClassA`, `TestInnerClassA`(instead of `TestClassA.TestInnerClassA`))
+* **--debug_method_name \<method_name\>** define the limit of the method name(just like `toString`, `<init>`(constructor method))
+* **--debug_include_children** define whether record the log in subroutines that called by the method in the limit above.
+
+#### ATTENTION
+
+* If `--debug`(or `-D`) not detected, debug mode is DISABLED and file logger will not be processed.
+* If debug level is invalid, there will be exception thrown out.
+* **All the limit above is regular-expression-supported!**
+* **Remember to initialize the configurations at the beginning!!!**
+
+#### Example  
+You can try to run the `Main.main` in the `test` directory to see and try the example.
+
+The command line arguments should be added before running the demo.
 
 ## Javadoc 
 (not yet created :-( )
