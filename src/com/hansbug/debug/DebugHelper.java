@@ -1,11 +1,11 @@
 package com.hansbug.debug;
 
+import com.hansbug.arguments.Arguments;
 import com.hansbug.arguments.exceptions.ArgumentsException;
+import com.hansbug.arguments.exceptions.InvalidArgumentInfo;
 import com.hansbug.debug.exceptions.DebugArgumentsException;
 import com.hansbug.debug.exceptions.DebugHelperException;
 import com.hansbug.debug.exceptions.InvalidDebugLevel;
-import com.hansbug.arguments.exceptions.InvalidArgumentInfo;
-import com.hansbug.arguments.Arguments;
 import com.hansbug.log.LogHelper;
 import com.hansbug.models.HashDefaultMap;
 
@@ -267,8 +267,12 @@ public abstract class DebugHelper {
         StackTraceElement[] trace_list = new Throwable().getStackTrace();
         StackTraceElement trace = trace_list[1];
         String debug_location = String.format("[%s:%s]", trace.getFileName(), trace.getLineNumber());
+        String thread_information = String.format("[%s]", Thread.currentThread().getName());
+        String debug_level_str = String.format("[DEBUG-%s]", debug_level);
         if (isLevelValid(debug_level) && isRangeValid(trace_list, trace)) {
-            String output = String.format("[DEBUG-%s] %s %s", debug_level, debug_location, debug_info);
+            String output = String.join("", new String[]{
+                    debug_level_str, thread_information, debug_location, " " + debug_info
+            });
             System.out.println(output);
             logger(String.format("[DEBUG OUTPUT] %s", output));
         } else {

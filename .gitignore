@@ -2,4 +2,5 @@
 /out
 /META-INF
 /src/META-INF
-debug_logger.iml
+/debug_logger.iml
+/debug.log
