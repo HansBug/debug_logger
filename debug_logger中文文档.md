@@ -79,7 +79,8 @@ DebugHelper.debugPrintln(2, String.format(
 一个简单的样例如下图：
 
 
-![](https://github.com/buaa0110/debug_logger/raw/master/image/image.png “demo1”
+！[]（https://github.com/buaa0110/debug_logger/raw/master/image/image.png)
+
 
 ##### Step3
 运行
