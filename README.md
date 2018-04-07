@@ -70,6 +70,32 @@ x: 3, y: 6
 [thread_1] 8
 ```
 
+if the arguments `--debug 1` is added, its standard output will be:
+```
+[DEBUG-1][Main.java:62 Main.testDebugHelper] ksdhjf
+x: 1, y: -1
+x: 3, y: 6
+[DEBUG-1][TestThread.java:18 TestThread.run] [Thread - "thread_1"] start
+[DEBUG-1][TestThread.java:18 TestThread.run] [Thread - "thread_2"] start
+[thread_2] 0
+[thread_1] 0
+[thread_2] 1
+[thread_1] 1
+[thread_2] 2
+[thread_1] 2
+[thread_2] 3
+[thread_2] 4
+[thread_1] 3
+[DEBUG-1][TestThread.java:31 TestThread.run] [Thread - "thread_2"] end
+[thread_1] 4
+[thread_1] 5
+[thread_1] 6
+[thread_1] 7
+[thread_1] 8
+[DEBUG-1][TestThread.java:31 TestThread.run] [Thread - "thread_1"] end
+```
+
+
 if the arguments `--debug 5` is added, its standard output will be:
 ```
 [DEBUG-1][Main.java:62 Main.testDebugHelper] ksdhjf
