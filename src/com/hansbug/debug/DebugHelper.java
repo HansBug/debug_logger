@@ -33,6 +33,7 @@ public abstract class DebugHelper {
      */
     private static final String ARG_SHORT_DEBUG = "D";
     private static final String ARG_FULL_DEBUG = "debug";
+    private static final String ARG_FULL_DEBUG_SHOW_THREAD = "debug_show_thread";
     private static final String ARG_FULL_DEBUG_INCLUDE_CHILDREN = "debug_include_children";
     private static final String ARG_FULL_DEBUG_PACKAGE_NAME = "debug_package_name";
     private static final String ARG_FULL_DEBUG_FILE_NAME = "debug_file_name";
@@ -46,6 +47,7 @@ public abstract class DebugHelper {
     private static boolean enable_debug = false;
     private static int debug_level = MIN_DEBUG_LEVEL;
     private static boolean range_include_children = false;
+    private static boolean show_thread = false;
     private static String package_name_regex = null;
     private static String file_name_regex = null;
     private static String class_name_regex = null;
@@ -59,6 +61,15 @@ public abstract class DebugHelper {
      */
     private static void setEnableDebug(boolean enable_debug) {
         DebugHelper.enable_debug = enable_debug;
+    }
+    
+    /**
+     * 设置是否显示线程信息
+     *
+     * @param show_thread 是否显示线程信息
+     */
+    private static void setShowThread(boolean show_thread) {
+        DebugHelper.show_thread = show_thread;
     }
     
     /**
@@ -132,6 +143,7 @@ public abstract class DebugHelper {
     private static Arguments setArguments(Arguments arguments) throws InvalidArgumentInfo {
         arguments.addArgs(ARG_SHORT_DEBUG, ARG_FULL_DEBUG, true);
         arguments.addArgs(null, ARG_FULL_DEBUG_INCLUDE_CHILDREN, false);
+        arguments.addArgs(null, ARG_FULL_DEBUG_SHOW_THREAD, false);
         arguments.addArgs(null, ARG_FULL_DEBUG_PACKAGE_NAME, true);
         arguments.addArgs(null, ARG_FULL_DEBUG_FILE_NAME, true);
         arguments.addArgs(null, ARG_FULL_DEBUG_CLASS_NAME, true);
@@ -150,6 +162,7 @@ public abstract class DebugHelper {
         if (enable_debug) {
             DebugHelper.setDebugLevel(Integer.valueOf(arguments.get(ARG_FULL_DEBUG)));
             DebugHelper.setRangeIncludeChildren(arguments.containsKey(ARG_FULL_DEBUG_INCLUDE_CHILDREN));
+            DebugHelper.setShowThread(arguments.containsKey(ARG_FULL_DEBUG_SHOW_THREAD));
             DebugHelper.setPackageNameRegex(arguments.get(ARG_FULL_DEBUG_PACKAGE_NAME));
             DebugHelper.setFileNameRegex(arguments.get(ARG_FULL_DEBUG_FILE_NAME));
             DebugHelper.setClassNameRegex(arguments.get(ARG_FULL_DEBUG_CLASS_NAME));
@@ -266,12 +279,19 @@ public abstract class DebugHelper {
     public static void debugPrintln(int debug_level, String debug_info) {
         StackTraceElement[] trace_list = new Throwable().getStackTrace();
         StackTraceElement trace = trace_list[1];
-        String debug_location = String.format("[%s:%s]", trace.getFileName(), trace.getLineNumber());
+        String class_method;
+        try {
+            Class cls = Class.forName(trace.getClassName());
+            class_method = String.format("%s.%s", cls.getSimpleName(), trace.getMethodName());
+        } catch (ClassNotFoundException e) {
+            class_method = trace.getMethodName();
+        }
+        String debug_location = String.format("[%s:%s %s]", trace.getFileName(), trace.getLineNumber(), class_method);
         String thread_information = String.format("[%s]", Thread.currentThread().getName());
         String debug_level_str = String.format("[DEBUG-%s]", debug_level);
         if (isLevelValid(debug_level) && isRangeValid(trace_list, trace)) {
             String output = String.join("", new String[]{
-                    debug_level_str, thread_information, debug_location, " " + debug_info
+                    debug_level_str, (show_thread ? thread_information : ""), debug_location, " " + debug_info
             });
             System.out.println(output);
             logger(String.format("[DEBUG OUTPUT] %s", output));

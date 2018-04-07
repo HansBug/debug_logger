@@ -30,8 +30,6 @@ abstract class Main {
 //        }
 //        System.exit(1);
         try {
-            System.out.println(System.getProperty("user.dir"));
-            
             DebugHelper.setSettingsFromArguments(args);
             testDebugHelper(args);
             
@@ -71,15 +69,10 @@ abstract class Main {
     }
     
     private static void testThread(String[] args) throws InterruptedException {
-        TestThread tt1 = new TestThread("thread_1", 15, 503);
-        TestThread tt2 = new TestThread("thread_2", 6, 397);
+        TestThread tt1 = new TestThread("thread_1", 9, 503);
+        TestThread tt2 = new TestThread("thread_2", 5, 367);
         tt1.start();
         tt2.start();
         tt2.join();
-        tt1.wait();
-//        Thread.sleep(3000);
-//        tt1.notify();
-
-//        System.exit(1);
     }
 }
