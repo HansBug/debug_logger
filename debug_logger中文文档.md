@@ -78,12 +78,12 @@ DebugHelper.debugPrintln(2, String.format(
 在需要的输出的地方调用相应的方法，并在运行前在`run configurations`中输入命令。
 一个简单的样例如下图：
 
-![](debug_logger / image /image.png “demo1”)
+![](https://github.com/buaa0110/debug_logger/raw/master/image/image.png “demo1”)
 
 ##### Step3
 运行
 
-![](debug_logger / image /image2.png “demo2”)
+![](https://github.com/buaa0110/debug_logger/raw/master/image/image2.png “demo2”)
 
 
 ---
