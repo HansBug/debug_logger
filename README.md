@@ -28,7 +28,7 @@ DebugHelper.debugPringln(2, "My debug information");
 ```
 When you use the `--debug 2`(or more than 2) in the command line, this will create a line of output(**in the standard output**).
 ```
-[DEBUG - 2][xxxx.java:233 TestClass.testMethod] My debug information
+[DEBUG-2][xxxx.java:233 TestClass.testMethod] My debug information
 ```
 `xxxx.java:233 TestClass.testMethod` represents the position where you put the `debugPrintln`, in this case it means _the 233rd line_ of the `xxxx.java`, in the method `testMethod` of the class `TestClass`.
 
