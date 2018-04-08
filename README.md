@@ -4,10 +4,6 @@
 
 ## How to start
 
-### In JetBrains IDEA
-
-### In Eclipse
-
 ### Initialize
 Firstly, we should initialize the config of the `DebugHelper` at the beginning of the entry point, like this:
 ```java
