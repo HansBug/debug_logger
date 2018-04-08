@@ -2,11 +2,11 @@
 
 `debug_logger` is a powerful debug helper based on the debug informations in the standard output. It can easily manage the output of the debug information, which will help us a lot when debugging.
 
-##How to start
+## How to start
 
-###In JetBrains IDEA
+### In JetBrains IDEA
 
-###In Eclipse
+### In Eclipse
 
 ### Initialize
 Firstly, we should initialize the config of the `DebugHelper` at the beginning of the entry point, like this:
