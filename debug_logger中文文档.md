@@ -88,8 +88,9 @@ DebugHelper.debugPrintln(2, String.format(
 
 ![](https://github.com/buaa0110/debug_logger/raw/master/image/image2.png “demo2”
 
-
+![](https://github.com/buaa0110/debug_logger/raw/master/image/image2.png)
 ---
+
 
 备注：
 
