@@ -79,18 +79,15 @@ DebugHelper.debugPrintln(2, String.format(
 一个简单的样例如下图：
 
 
-！[]（https://github.com/buaa0110/debug_logger/raw/master/image/image.png)
-
+![](https://github.com/buaa0110/debug_logger/raw/master/image/image.png)
 
 ##### Step3
 运行
 
 
-![](https://github.com/buaa0110/debug_logger/raw/master/image/image2.png “demo2”
-
 ![](https://github.com/buaa0110/debug_logger/raw/master/image/image2.png)
----
 
+---
 
 备注：
 
