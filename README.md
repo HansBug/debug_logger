@@ -20,7 +20,7 @@ After this, we can use the `DebugHelper`.
 ### Let's debug
 The usage of `DebugHelper` in the program is very easy. You can add this into your program anywhere you like to output the debug information.
 ```java
-DebugHelper.debugPringln(2, "My debug information");
+DebugHelper.debugPrintln(2, "My debug information");
 ```
 When you use the `--debug 2`(or more than 2) in the command line, this will create a line of output(**in the standard output**).
 ```

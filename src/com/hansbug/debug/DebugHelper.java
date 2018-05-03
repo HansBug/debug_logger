@@ -280,13 +280,14 @@ public abstract class DebugHelper {
         StackTraceElement[] trace_list = new Throwable().getStackTrace();
         StackTraceElement trace = trace_list[1];
         String class_method;
+        int trace_len = trace_list.length ;
         try {
             Class cls = Class.forName(trace.getClassName());
             class_method = String.format("%s.%s", cls.getSimpleName(), trace.getMethodName());
         } catch (ClassNotFoundException e) {
             class_method = trace.getMethodName();
         }
-        String debug_location = String.format("[%s:%s %s]", trace.getFileName(), trace.getLineNumber(), class_method);
+        String debug_location = String.format("[%s:DEPTH-%d:%s:%s %s]", trace.getFileName(),trace_len-1, trace.getClassName(), trace.getLineNumber(), class_method);
         String thread_information = String.format("[%s]", Thread.currentThread().getName());
         String debug_level_str = String.format("[DEBUG-%s]", debug_level);
         if (isLevelValid(debug_level) && isRangeValid(trace_list, trace)) {

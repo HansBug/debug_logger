@@ -24,7 +24,7 @@ public abstract class Main {
 
 在代码中使用这款调试工具非常简单，我们只要在希望输出信息的地方加入如下的代码, 像这样:
 ```java
-DebugHelper.debugPringln(2, "My debug information");
+DebugHelper.debugPrintln(2, "My debug information");
 ```
 
 或者这样:
