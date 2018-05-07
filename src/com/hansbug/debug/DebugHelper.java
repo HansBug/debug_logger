@@ -276,7 +276,7 @@ public abstract class DebugHelper {
      * @param debug_level debug level
      * @param debug_info  debug信息
      */
-    public static void debugPrintln(int debug_level, String debug_info) {
+    public static void dPrintln(int debug_level, String debug_info) {
         StackTraceElement[] trace_list = new Throwable().getStackTrace();
         StackTraceElement trace = trace_list[1];
         String class_method;
@@ -295,6 +295,39 @@ public abstract class DebugHelper {
                     debug_level_str, (show_thread ? thread_information : ""), debug_location, " " + debug_info
             });
             System.out.println(output);
+            logger(String.format("[DEBUG OUTPUT] %s", output));
+        } else {
+            logger(String.format("[DEBUG HIDDEN] Location : %s", debug_location));
+        }
+    }
+    /**
+     * debug信息输出
+     *
+     * @param debug_level debug level
+     * @param debug_info  debug信息
+     * @param print_switch print开关，当不需要输出时可以立即关掉
+     */
+    public static void dPrintln(int debug_number, int print_switch, String debug_info) {
+        StackTraceElement[] trace_list = new Throwable().getStackTrace();
+        StackTraceElement trace = trace_list[1];
+        String class_method;
+        int trace_len = trace_list.length ;
+        try {
+            Class cls = Class.forName(trace.getClassName());
+            class_method = String.format("%s.%s", cls.getSimpleName(), trace.getMethodName());
+        } catch (ClassNotFoundException e) {
+            class_method = trace.getMethodName();
+        }
+        String debug_location = String.format("[%s:DEPTH-%d:%s:%s %s]", trace.getFileName(),trace_len-1, trace.getClassName(), trace.getLineNumber(), class_method);
+        String thread_information = String.format("[%s]", Thread.currentThread().getName());
+        String debug_level_str = String.format("[DEBUG-%s]", debug_number);
+        if (isRangeValid(trace_list, trace)) {
+            String output = String.join("", new String[]{
+                    debug_level_str, (show_thread ? thread_information : ""), debug_location, " " + debug_info
+            });
+            if(print_switch){
+                System.out.println(output);
+            }
             logger(String.format("[DEBUG OUTPUT] %s", output));
         } else {
             logger(String.format("[DEBUG HIDDEN] Location : %s", debug_location));
